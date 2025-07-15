@@ -1,0 +1,80 @@
+.signup-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #667eea;
+  padding: 20px;
+}
+
+.signup-card {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  width: 600px;
+  text-align: center;
+}
+
+.signup-header h1 {
+  font-size: 2.2rem;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.signup-header p {
+  color: #666;
+  margin-bottom: 32px;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.auth-section {
+  margin-bottom: 32px;
+}
+
+.navigation-section {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 24px;
+}
+
+.navigation-section p {
+  color: #666;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+
+.nav-link {
+  display: inline-block;
+  padding: 10px 24px;
+  background: transparent;
+  color: #764ba2;
+  border: 2px solid #764ba2;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  background: #764ba2;
+  color: white;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+  .signup-page {
+    padding: 10px;
+  }
+  
+  .signup-card {
+    padding: 30px 20px;
+  }
+  
+  .signup-header h1 {
+    font-size: 1.8rem;
+  }
+}
