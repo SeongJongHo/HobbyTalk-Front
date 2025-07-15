@@ -5,7 +5,7 @@ export const useAppNavigation = () => {
 
     return {
         goToHome: () => navigate("/"),
-        goToSignup: () => navigate("/sign-up"),
+        goToSignup: () => navigate("/signup"),
         goToLogin: () => navigate("/login"),
         replaceToHome: () => navigate("/", { replace: true }),
     };
