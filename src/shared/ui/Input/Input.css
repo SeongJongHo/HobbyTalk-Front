@@ -1,0 +1,70 @@
+.input-container {
+  margin-bottom: 0;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  color: #666;
+  z-index: 1;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.input-with-icon {
+  padding-left: 44px;
+}
+
+.input-with-right-icon {
+  padding-right: 44px;
+}
+
+.input:focus {
+  border-color: #667eea;
+}
+
+.input-error {
+  border-color: #ef4444;
+}
+
+.input::placeholder {
+  color: #999;
+}
+
+.input-toggle-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  padding: 0;
+}
+
+.input-toggle-btn:hover {
+  color: #333;
+}
+
+.input-error-text {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  display: block;
+}
