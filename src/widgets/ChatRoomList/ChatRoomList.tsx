@@ -1,6 +1,9 @@
 ﻿import React, { useState, useEffect, useCallback } from 'react';
 import { useChatRooms } from '@/features/chatRoom';
+import { chatRoomApi } from '@/features/chatRoom/api/chatRoomApi';
 import { useCategoryStore } from '@/entities/category/store/useCategoryStore';
+import { CreateRoomModal } from '@/widgets/CreateRoomModal';
+import type { CreateRoomData } from '@/widgets/CreateRoomModal';
 import './ChatRoomList.css';
 
 export const ChatRoomList: React.FC = () => {
@@ -11,6 +14,7 @@ export const ChatRoomList: React.FC = () => {
     const [inputValue, setInputValue] = useState('');
     const [allRooms, setAllRooms] = useState<any[]>([]);
     const [hasMore, setHasMore] = useState(true);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     const roomsPerPage = 20;
 
@@ -65,6 +69,31 @@ export const ChatRoomList: React.FC = () => {
         }
 
         alert('아직 구현되지 않은 기능입니다.');
+    }, []);
+
+    const handleCreateRoom = useCallback(async (data: CreateRoomData) => {
+        try {
+            await chatRoomApi.createChatRoom(data);
+
+            alert('채팅방이 성공적으로 생성되었습니다!');
+
+            setAllRooms([]);
+            setLastCreatedAt(null);
+            setHasMore(true);
+        } catch (error: any) {
+            alert(
+                error.message ||
+                    '채팅방 생성에 실패했습니다. 다시 시도해주세요.'
+            );
+        }
+    }, []);
+
+    const openCreateModal = useCallback(() => {
+        setIsCreateModalOpen(true);
+    }, []);
+
+    const closeCreateModal = useCallback(() => {
+        setIsCreateModalOpen(false);
     }, []);
 
     const handleScroll = useCallback(() => {
@@ -165,7 +194,10 @@ export const ChatRoomList: React.FC = () => {
                         검색
                     </button>
 
-                    <button className="create-room-btn">
+                    <button
+                        className="create-room-btn"
+                        onClick={openCreateModal}
+                    >
                         <svg
                             width="20"
                             height="20"
@@ -334,9 +366,20 @@ export const ChatRoomList: React.FC = () => {
                     <div className="no-data-icon">💬</div>
                     <h3>채팅방이 없습니다</h3>
                     <p>첫 번째 채팅방을 만들어보세요!</p>
-                    <button className="create-first-room-btn">방 만들기</button>
+                    <button
+                        className="create-first-room-btn"
+                        onClick={openCreateModal}
+                    >
+                        방 만들기
+                    </button>
                 </div>
             )}
+
+            <CreateRoomModal
+                isOpen={isCreateModalOpen}
+                onClose={closeCreateModal}
+                onSubmit={handleCreateRoom}
+            />
         </div>
     );
 };
