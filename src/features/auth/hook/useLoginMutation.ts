@@ -4,14 +4,14 @@ import { useAuthStore } from "@/entities/user";
 
 export const useLoginMutation = () => {
     const [loading, setLoading] = useState(false);
-
+    const setToken = useAuthStore((state) => state.setToken);
     const submit = async (
         credentials: { username: string; password: string },
         onSuccess?: () => void,
         onError?: (error: string) => void
     ) => {
         setLoading(true);
-        const setToken = useAuthStore((state) => state.setToken);
+
         try {
             const token = await authApi.login(credentials);
             setToken(token);

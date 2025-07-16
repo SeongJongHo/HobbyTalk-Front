@@ -5,15 +5,16 @@ export const authApi = {
     login: async (credentials: LoginCredentials): Promise<string> => {
         try {
             const response = await apiClient.post(
-                "/api/v1/auth/sign-in",
+                "/api/command/v1/auth/sign-in",
                 credentials
             );
 
             return response.data.token;
         } catch (error: any) {
-            if (error.response?.status === 401) {
+            if (error.response?.data?.status) {
+                console.error("Login error:", error);
                 throw new Error(
-                    error.response?.message ||
+                    error.response?.data?.message ||
                         "로그인 정보가 올바르지 않습니다."
                 );
             }
