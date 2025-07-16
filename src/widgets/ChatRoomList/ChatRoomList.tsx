@@ -64,19 +64,7 @@ export const ChatRoomList: React.FC = () => {
             return;
         }
 
-        if (room.is_private) {
-            const password = prompt('비밀번호를 입력하세요:');
-            if (!password) {
-                return;
-            }
-            // TODO: 비밀번호 검증 로직 추가
-            console.log('비밀번호 입력으로 방 입장:', room.id, password);
-        } else {
-            console.log('공개 방 입장:', room.id);
-        }
-
-        // TODO: 실제 채팅방 입장 로직 구현
-        alert(`채팅방 "${room.title}"에 입장합니다.`);
+        alert('아직 구현되지 않은 기능입니다.');
     }, []);
 
     const handleScroll = useCallback(() => {
