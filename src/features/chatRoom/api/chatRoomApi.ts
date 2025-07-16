@@ -2,6 +2,7 @@ import { apiClient } from '../../../shared/lib/api/apiClient';
 import type { ChatRoom } from '../../../entities/chatRoom';
 import type { UseChatRoomsParams } from '../lib/useChatRooms';
 import type { CreateRoomData } from '@/widgets/CreateRoomModal';
+import type { MyChatRoom } from '@/entities/chatRoom/model/types';
 
 export const chatRoomApi = {
     async getChatRooms(params: UseChatRoomsParams): Promise<ChatRoom[]> {
@@ -33,5 +34,12 @@ export const chatRoomApi = {
             }
             throw new Error('채팅방 생성에 실패했습니다.');
         }
+    },
+
+    async getMyRooms(): Promise<MyChatRoom[]> {
+        const response = await apiClient.get(
+            '/api/query/v1/open-chat-rooms/my'
+        );
+        return response.data?.data || [];
     },
 };

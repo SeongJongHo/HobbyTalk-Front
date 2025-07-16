@@ -1,0 +1,121 @@
+.messages-page .my-rooms-list {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.messages-page .my-room-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.messages-page .my-room-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.messages-page .room-info {
+    width: 100%;
+}
+
+.messages-page .room-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.messages-page .room-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+}
+
+.messages-page .room-category {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    background: #667eea;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.messages-page .room-description {
+    color: #718096;
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+}
+
+.messages-page .room-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: #a0aec0;
+}
+
+.messages-page .member-count {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.messages-page .unread-badge {
+    background: #ff6b6b;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    min-width: 20px;
+    text-align: center;
+}
+
+.messages-page .my-rooms-loading,
+.messages-page .my-rooms-error,
+.messages-page .my-rooms-empty {
+    text-align: center;
+    padding: 3rem;
+}
+
+.messages-page .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e2e8f0;
+    border-left: 4px solid #4299e1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.messages-page .my-rooms-error {
+    color: #e53e3e;
+}
+
+.messages-page .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.messages-page .my-rooms-empty h3 {
+    color: #2d3748;
+    margin: 0 0 0.5rem 0;
+}
+
+.messages-page .my-rooms-empty p {
+    color: #718096;
+    margin: 0;
+}

@@ -1,2 +1,2 @@
-export { useChatRooms } from './lib';
+export { useChatRooms, useMyRooms } from './lib';
 export { chatRoomApi } from './api';
