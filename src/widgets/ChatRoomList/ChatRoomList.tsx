@@ -1,0 +1,354 @@
+﻿import React, { useState, useEffect, useCallback } from 'react';
+import { useChatRooms } from '@/features/chatRoom';
+import { useCategoryStore } from '@/entities/category/store/useCategoryStore';
+import './ChatRoomList.css';
+
+export const ChatRoomList: React.FC = () => {
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(
+        null
+    );
+    const [searchTerm, setSearchTerm] = useState('');
+    const [inputValue, setInputValue] = useState('');
+    const [allRooms, setAllRooms] = useState<any[]>([]);
+    const [hasMore, setHasMore] = useState(true);
+
+    const roomsPerPage = 20;
+
+    const [lastCreatedAt, setLastCreatedAt] = useState<string | null>(null);
+
+    const { categories, fetchCategories, clearCategories } = useCategoryStore();
+
+    useEffect(() => {
+        clearCategories();
+        fetchCategories();
+    }, [fetchCategories, clearCategories]);
+
+    const { rooms, loading, error, refetch } = useChatRooms({
+        categoryId: selectedCategory || undefined,
+        search: searchTerm,
+        lastCreatedAt: lastCreatedAt || undefined,
+        limit: roomsPerPage,
+    });
+
+    useEffect(() => {
+        if (rooms && rooms.length > 0) {
+            setAllRooms(prevRooms => {
+                const existingIds = new Set(prevRooms.map(room => room.id));
+                const newRooms = rooms.filter(
+                    room => !existingIds.has(room.id)
+                );
+
+                if (lastCreatedAt === null) {
+                    return rooms;
+                } else {
+                    return [...prevRooms, ...newRooms];
+                }
+            });
+
+            if (rooms.length < roomsPerPage) {
+                setHasMore(false);
+            }
+
+            if (rooms.length > 0) {
+                setLastCreatedAt(rooms[rooms.length - 1].created_at);
+            }
+        }
+    }, [rooms, lastCreatedAt, roomsPerPage]);
+
+    const handleJoinRoom = useCallback((room: any) => {
+        const isFull =
+            (room.current_attendance || 0) >= (room.maximum_capacity || 0);
+
+        if (isFull) {
+            alert('이 채팅방은 만원입니다.');
+            return;
+        }
+
+        if (room.is_private) {
+            const password = prompt('비밀번호를 입력하세요:');
+            if (!password) {
+                return;
+            }
+            // TODO: 비밀번호 검증 로직 추가
+            console.log('비밀번호 입력으로 방 입장:', room.id, password);
+        } else {
+            console.log('공개 방 입장:', room.id);
+        }
+
+        // TODO: 실제 채팅방 입장 로직 구현
+        alert(`채팅방 "${room.title}"에 입장합니다.`);
+    }, []);
+
+    const handleScroll = useCallback(() => {
+        if (loading || !hasMore) return;
+
+        const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+
+        if (scrollTop + windowHeight >= documentHeight - 1000) {
+            refetch();
+        }
+    }, [loading, hasMore, refetch]);
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [handleScroll]);
+
+    const handleCategoryChange = (category: string | null) => {
+        setSelectedCategory(category);
+        setAllRooms([]);
+        setLastCreatedAt(null);
+        setHasMore(true);
+    };
+
+    const executeSearch = () => {
+        setSearchTerm(inputValue.trim());
+        setAllRooms([]);
+        setLastCreatedAt(null);
+        setHasMore(true);
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            executeSearch();
+        }
+    };
+
+    const handleClearSearch = () => {
+        setInputValue('');
+        setSearchTerm('');
+        setAllRooms([]);
+        setLastCreatedAt(null);
+        setHasMore(true);
+    };
+
+    if (error) {
+        return (
+            <div className="error-message">오류가 발생했습니다: {error}</div>
+        );
+    }
+
+    return (
+        <div className="chat-room-list">
+            <div className="room-list-header">
+                <div className="header-title">
+                    <h2>오픈 채팅방</h2>
+                </div>
+
+                <div className="header-actions">
+                    <div className="search-section">
+                        <input
+                            type="text"
+                            placeholder="채팅방 제목, 설명으로 검색..."
+                            value={inputValue}
+                            onChange={e => setInputValue(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                            className="room-search-input"
+                        />
+                        {inputValue && (
+                            <button
+                                onClick={handleClearSearch}
+                                className="clear-search-btn"
+                                title="검색 초기화"
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
+
+                    <button onClick={executeSearch} className="search-btn">
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+                            <path
+                                d="M21 21L16.514 16.506L21 21ZM19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                        검색
+                    </button>
+
+                    <button className="create-room-btn">
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+                            <path
+                                d="M12 5V19M5 12H19"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                        방 만들기
+                    </button>
+                </div>
+            </div>
+
+            <div className="category-filter">
+                <button
+                    key="all"
+                    className={`category-btn ${
+                        selectedCategory === null ? 'active' : ''
+                    }`}
+                    onClick={() => handleCategoryChange(null)}
+                >
+                    전체
+                </button>
+
+                {Array.isArray(categories) &&
+                    categories.map(category => (
+                        <button
+                            key={category.id}
+                            className={`category-btn ${
+                                selectedCategory === category.name
+                                    ? 'active'
+                                    : ''
+                            }`}
+                            onClick={() => handleCategoryChange(category.name)}
+                        >
+                            {category.name}
+                        </button>
+                    ))}
+            </div>
+
+            {(selectedCategory || searchTerm) && (
+                <div className="active-filters">
+                    {selectedCategory && (
+                        <span className="filter-tag">
+                            카테고리: {selectedCategory}
+                            <button onClick={() => handleCategoryChange(null)}>
+                                ✕
+                            </button>
+                        </span>
+                    )}
+                    {searchTerm && (
+                        <span className="filter-tag">
+                            검색: "{searchTerm}"
+                            <button onClick={handleClearSearch}>✕</button>
+                        </span>
+                    )}
+                </div>
+            )}
+
+            <div className="rooms-grid">
+                {allRooms.map(room => (
+                    <div key={room.id} className="room-card">
+                        <div className="room-header">
+                            <div className="room-info">
+                                <div className="room-category">
+                                    {room.category || '기타'}
+                                </div>
+                                {room.is_private && (
+                                    <span className="private-badge">
+                                        🔒 비공개
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="room-content">
+                            <h3 className="room-title">{room.title}</h3>
+                            <p className="room-description">
+                                {room.description}
+                            </p>
+                        </div>
+
+                        <div className="room-footer">
+                            <div className="room-footer-left">
+                                <div className="room-tags">
+                                    {room.hashtags &&
+                                        room.hashtags.map(
+                                            (tag: string, index: number) => (
+                                                <span
+                                                    key={index}
+                                                    className="room-tag"
+                                                >
+                                                    #{tag}
+                                                </span>
+                                            )
+                                        )}
+                                </div>
+                                <div className="room-meta">
+                                    <div className="room-status">
+                                        {room.status === 'active' && (
+                                            <span className="status-active">
+                                                🟢 활성
+                                            </span>
+                                        )}
+                                        {room.status === 'inactive' && (
+                                            <span className="status-inactive">
+                                                ⚫ 비활성
+                                            </span>
+                                        )}
+                                        {(room.current_attendance || 0) >=
+                                            (room.maximum_capacity || 0) && (
+                                            <span className="status-full">
+                                                🔴 만원
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="room-participants-footer">
+                                        <span className="participants-text">
+                                            👥 {room.current_attendance || 0}/
+                                            {room.maximum_capacity || 0}명
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="room-actions">
+                                <button
+                                    className="join-room-btn"
+                                    onClick={() => handleJoinRoom(room)}
+                                    disabled={
+                                        (room.current_attendance || 0) >=
+                                        (room.maximum_capacity || 0)
+                                    }
+                                >
+                                    {(room.current_attendance || 0) >=
+                                    (room.maximum_capacity || 0)
+                                        ? '🔴 만원'
+                                        : room.is_private
+                                        ? '🔒 비밀번호 입력'
+                                        : '🚪 입장하기'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {loading && (
+                <div className="loading-spinner">
+                    <div className="spinner"></div>
+                    <span>채팅방을 불러오는 중...</span>
+                </div>
+            )}
+
+            {!hasMore && allRooms.length > 0 && (
+                <div className="no-more-data">모든 채팅방을 불러왔습니다.</div>
+            )}
+
+            {!loading && allRooms.length === 0 && (
+                <div className="no-data">
+                    <div className="no-data-icon">💬</div>
+                    <h3>채팅방이 없습니다</h3>
+                    <p>첫 번째 채팅방을 만들어보세요!</p>
+                    <button className="create-first-room-btn">방 만들기</button>
+                </div>
+            )}
+        </div>
+    );
+};
