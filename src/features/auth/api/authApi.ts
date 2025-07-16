@@ -25,11 +25,11 @@ export const authApi = {
 
     signup: async (data: SignupRequest): Promise<void> => {
         try {
-            await apiClient.post("/api/v1/auth/sign-up", data);
+            await apiClient.post("/api/command/v1/auth/sign-up", data);
         } catch (error: any) {
-            if (error.response?.status) {
+            if (error.response?.data?.status) {
                 throw new Error(
-                    error.response?.message ||
+                    error.response?.data?.message ||
                         "회원가입 정보가 올바르지 않습니다."
                 );
             }

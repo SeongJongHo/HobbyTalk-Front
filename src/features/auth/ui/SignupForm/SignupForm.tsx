@@ -74,8 +74,11 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onError }) =>
     try {
       await authApi.signup(formData);
       onSuccess?.();
-    } catch (error) {
-      onError?.('회원가입에 실패했습니다.');
+    } catch (e) {
+      const errorMessage =
+                e instanceof Error ? e.message : "회원가입에 실패했습니다.";
+
+      onError?.(errorMessage);
     } finally {
       setLoading(false);
     }
