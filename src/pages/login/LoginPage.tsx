@@ -1,39 +1,48 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LoginForm } from '@/features/auth';
 import './LoginPage.css';
 import { useAppNavigation } from '@/shared/lib/navigation/useAppNavigation';
+import { useAuthStore } from '@/entities/user/store/useAuthStore';
 
 export const LoginPage: React.FC = () => {
-  const { goToHome } = useAppNavigation();
-  const handleLoginSuccess = () => {
-    goToHome();
-  };
+    const { goToHome } = useAppNavigation();
+    const { token } = useAuthStore();
 
-  const handleLoginError = (error: string) => {
-    alert(error);
-  };
+    useEffect(() => {
+        if (token) {
+            goToHome();
+        }
+    }, [token, goToHome]);
 
-  return (
-    <div className="login-page">
-      <div className="login-card">
-        <div className="login-header">
-          <h1>HobbyTalk</h1>
-          <p>오픈채팅으로 취미를 공유하세요</p>
+    const handleLoginSuccess = () => {
+        goToHome();
+    };
+
+    const handleLoginError = (error: string) => {
+        alert(error);
+    };
+
+    return (
+        <div className="login-page">
+            <div className="login-card">
+                <div className="login-header">
+                    <h1>HobbyTalk</h1>
+                    <p>오픈채팅으로 취미를 공유하세요</p>
+                </div>
+                <div className="auth-section">
+                    <LoginForm
+                        onSuccess={handleLoginSuccess}
+                        onError={handleLoginError}
+                    />
+                </div>
+                <div className="navigation-section">
+                    <p>계정이 없으신가요?</p>
+                    <Link to="/signup" className="nav-link">
+                        회원가입
+                    </Link>
+                </div>
+            </div>
         </div>
-        <div className="auth-section">
-          <LoginForm
-            onSuccess={handleLoginSuccess}
-            onError={handleLoginError}
-          />
-        </div>
-        <div className="navigation-section">
-          <p>계정이 없으신가요?</p>
-          <Link to="/signup" className="nav-link">
-            회원가입
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
