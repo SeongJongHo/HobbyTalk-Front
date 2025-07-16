@@ -10,15 +10,18 @@ export const ChatRoomList: React.FC = () => {
     const [selectedCategory, setSelectedCategory] = useState<string | null>(
         null
     );
-    const [searchTerm, setSearchTerm] = useState('');
-    const [inputValue, setInputValue] = useState('');
+    const [lastCreatedAt, setLastCreatedAt] = useState<string | null>(null);
     const [allRooms, setAllRooms] = useState<any[]>([]);
     const [hasMore, setHasMore] = useState(true);
+
+    const [inputValue, setInputValue] = useState('');
+    const [isSearchMode, setIsSearchMode] = useState(false);
+    const [currentSearchTerm, setCurrentSearchTerm] = useState('');
+    const [searchLoading, setSearchLoading] = useState(false);
+
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     const roomsPerPage = 20;
-
-    const [lastCreatedAt, setLastCreatedAt] = useState<string | null>(null);
 
     const { categories, fetchCategories, clearCategories } = useCategoryStore();
 
@@ -29,13 +32,13 @@ export const ChatRoomList: React.FC = () => {
 
     const { rooms, loading, error, refetch } = useChatRooms({
         categoryId: selectedCategory || undefined,
-        search: searchTerm,
+        search: '',
         lastCreatedAt: lastCreatedAt || undefined,
         limit: roomsPerPage,
     });
 
     useEffect(() => {
-        if (rooms && rooms.length > 0) {
+        if (rooms && rooms.length > 0 && !isSearchMode) {
             setAllRooms(prevRooms => {
                 const existingIds = new Set(prevRooms.map(room => room.id));
                 const newRooms = rooms.filter(
@@ -57,7 +60,7 @@ export const ChatRoomList: React.FC = () => {
                 setLastCreatedAt(rooms[rooms.length - 1].created_at);
             }
         }
-    }, [rooms, lastCreatedAt, roomsPerPage]);
+    }, [rooms, lastCreatedAt, roomsPerPage, isSearchMode]);
 
     const handleJoinRoom = useCallback((room: any) => {
         const isFull =
@@ -97,7 +100,7 @@ export const ChatRoomList: React.FC = () => {
     }, []);
 
     const handleScroll = useCallback(() => {
-        if (loading || !hasMore) return;
+        if (loading || !hasMore || isSearchMode) return;
 
         const scrollTop =
             window.pageYOffset || document.documentElement.scrollTop;
@@ -107,7 +110,7 @@ export const ChatRoomList: React.FC = () => {
         if (scrollTop + windowHeight >= documentHeight - 1000) {
             refetch();
         }
-    }, [loading, hasMore, refetch]);
+    }, [loading, hasMore, refetch, isSearchMode]);
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
@@ -116,16 +119,52 @@ export const ChatRoomList: React.FC = () => {
 
     const handleCategoryChange = (category: string | null) => {
         setSelectedCategory(category);
+        setIsSearchMode(false);
+        setCurrentSearchTerm('');
         setAllRooms([]);
         setLastCreatedAt(null);
         setHasMore(true);
     };
 
-    const executeSearch = () => {
-        setSearchTerm(inputValue.trim());
-        setAllRooms([]);
-        setLastCreatedAt(null);
-        setHasMore(true);
+    const executeSearch = async () => {
+        const searchTerm = inputValue.trim();
+
+        if (!searchTerm) {
+            setIsSearchMode(false);
+            setCurrentSearchTerm('');
+            setAllRooms([]);
+            setLastCreatedAt(null);
+            setHasMore(true);
+            refetch();
+            return;
+        }
+
+        if (searchTerm.length < 2) {
+            alert('검색어는 2글자 이상 입력해주세요.');
+            return;
+        }
+
+        try {
+            setIsSearchMode(true);
+            setCurrentSearchTerm(searchTerm);
+            setAllRooms([]);
+            setLastCreatedAt(null);
+            setHasMore(false);
+            setSearchLoading(true);
+
+            const searchResults = await chatRoomApi.getChatRooms({
+                categoryId: selectedCategory || undefined,
+                search: searchTerm,
+                limit: 100,
+            });
+
+            setAllRooms(searchResults);
+        } catch (error) {
+            console.error('검색 실패:', error);
+            alert('검색 중 오류가 발생했습니다.');
+        } finally {
+            setSearchLoading(false);
+        }
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -136,10 +175,12 @@ export const ChatRoomList: React.FC = () => {
 
     const handleClearSearch = () => {
         setInputValue('');
-        setSearchTerm('');
+        setIsSearchMode(false);
+        setCurrentSearchTerm('');
         setAllRooms([]);
         setLastCreatedAt(null);
         setHasMore(true);
+        refetch();
     };
 
     if (error) {
@@ -159,7 +200,7 @@ export const ChatRoomList: React.FC = () => {
                     <div className="search-section">
                         <input
                             type="text"
-                            placeholder="채팅방 제목, 설명으로 검색..."
+                            placeholder="채팅방 제목, 설명으로 검색... (2글자 이상)"
                             value={inputValue}
                             onChange={e => setInputValue(e.target.value)}
                             onKeyPress={handleKeyPress}
@@ -244,7 +285,7 @@ export const ChatRoomList: React.FC = () => {
                     ))}
             </div>
 
-            {(selectedCategory || searchTerm) && (
+            {(selectedCategory || currentSearchTerm) && (
                 <div className="active-filters">
                     {selectedCategory && (
                         <span className="filter-tag">
@@ -254,9 +295,9 @@ export const ChatRoomList: React.FC = () => {
                             </button>
                         </span>
                     )}
-                    {searchTerm && (
+                    {currentSearchTerm && (
                         <span className="filter-tag">
-                            검색: "{searchTerm}"
+                            검색: "{currentSearchTerm}"
                             <button onClick={handleClearSearch}>✕</button>
                         </span>
                     )}
@@ -350,10 +391,14 @@ export const ChatRoomList: React.FC = () => {
                 ))}
             </div>
 
-            {loading && (
+            {(loading || searchLoading) && (
                 <div className="loading-spinner">
                     <div className="spinner"></div>
-                    <span>채팅방을 불러오는 중...</span>
+                    <span>
+                        {searchLoading
+                            ? '검색 중...'
+                            : '채팅방을 불러오는 중...'}
+                    </span>
                 </div>
             )}
 
@@ -361,17 +406,35 @@ export const ChatRoomList: React.FC = () => {
                 <div className="no-more-data">모든 채팅방을 불러왔습니다.</div>
             )}
 
-            {!loading && allRooms.length === 0 && (
+            {!loading && !searchLoading && allRooms.length === 0 && (
                 <div className="no-data">
                     <div className="no-data-icon">💬</div>
-                    <h3>채팅방이 없습니다</h3>
-                    <p>첫 번째 채팅방을 만들어보세요!</p>
-                    <button
-                        className="create-first-room-btn"
-                        onClick={openCreateModal}
-                    >
-                        방 만들기
-                    </button>
+                    {isSearchMode ? (
+                        <>
+                            <h3>검색 결과가 없습니다</h3>
+                            <p>
+                                "{currentSearchTerm}"에 대한 채팅방을 찾을 수
+                                없습니다.
+                            </p>
+                            <button
+                                className="create-first-room-btn"
+                                onClick={handleClearSearch}
+                            >
+                                전체 채팅방 보기
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <h3>채팅방이 없습니다</h3>
+                            <p>첫 번째 채팅방을 만들어보세요!</p>
+                            <button
+                                className="create-first-room-btn"
+                                onClick={openCreateModal}
+                            >
+                                방 만들기
+                            </button>
+                        </>
+                    )}
                 </div>
             )}
 
