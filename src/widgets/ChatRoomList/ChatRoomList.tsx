@@ -4,9 +4,14 @@ import { chatRoomApi } from '@/features/chatRoom/api/chatRoomApi';
 import { useCategoryStore } from '@/entities/category/store/useCategoryStore';
 import { CreateRoomModal } from '@/widgets/CreateRoomModal';
 import type { CreateRoomData } from '@/widgets/CreateRoomModal';
+import { useAuthCheck } from '@/shared/lib/auth/authUtils';
+import { useNavigate } from 'react-router-dom';
 import './ChatRoomList.css';
 
 export const ChatRoomList: React.FC = () => {
+    const navigate = useNavigate();
+    const { checkAuth } = useAuthCheck();
+
     const [selectedCategory, setSelectedCategory] = useState<string | null>(
         null
     );
@@ -110,8 +115,11 @@ export const ChatRoomList: React.FC = () => {
     }, []);
 
     const openCreateModal = useCallback(() => {
+        if (!checkAuth(navigate)) {
+            return;
+        }
         setIsCreateModalOpen(true);
-    }, []);
+    }, [checkAuth, navigate]);
 
     const closeCreateModal = useCallback(() => {
         setIsCreateModalOpen(false);

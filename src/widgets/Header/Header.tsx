@@ -1,15 +1,24 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { User } from 'lucide-react';
+import { useAuthCheck } from '@/shared/lib/auth/authUtils';
 import './Header.css';
 
 export const Header: React.FC = () => {
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
+    const { checkAuth } = useAuthCheck();
 
     const handleNotImplemented = (feature: string) => {
         alert(`${feature}은(는) 아직 제공되지 않는 기능입니다.`);
         setIsProfileMenuOpen(false);
+    };
+
+    const handleMessagesClick = (e: React.MouseEvent) => {
+        if (!checkAuth(navigate)) {
+            e.preventDefault();
+        }
     };
 
     return (
@@ -37,6 +46,7 @@ export const Header: React.FC = () => {
                                     ? 'active'
                                     : ''
                             }`}
+                            onClick={handleMessagesClick}
                         >
                             메시지
                         </Link>
