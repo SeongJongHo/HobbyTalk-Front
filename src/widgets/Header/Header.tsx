@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { User } from 'lucide-react';
 import './Header.css';
 
 export const Header: React.FC = () => {
@@ -45,11 +46,9 @@ export const Header: React.FC = () => {
                                 setIsProfileMenuOpen(!isProfileMenuOpen)
                             }
                         >
-                            <img
-                                src="/api/placeholder/40/40"
-                                alt="Profile"
-                                className="profile-avatar"
-                            />
+                            <div className="profile-avatar">
+                                <User size={24} />
+                            </div>
                             <svg
                                 width="16"
                                 height="16"
