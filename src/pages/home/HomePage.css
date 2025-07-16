@@ -1,0 +1,114 @@
+.home-page {
+    min-height: 100vh;
+    background: #f5f7fa;
+}
+
+.home-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    padding: 24px;
+    min-height: calc(100vh - 80px);
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.left-sidebar {
+    position: sticky;
+    top: 104px;
+    height: fit-content;
+}
+
+.main-content {
+    min-height: 100%;
+}
+
+/* 인기 취미 섹션 */
+.trending-topics {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e8ed;
+}
+
+.trending-topics h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #667eea;
+}
+
+.topic-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.topic-item {
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topic-name {
+    font-weight: 500;
+}
+
+.topic-count {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 600;
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    padding: 4px 8px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.topic-item:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.topic-item:hover .topic-count {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+    .home-content {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-content {
+        padding: 12px;
+    }
+}
