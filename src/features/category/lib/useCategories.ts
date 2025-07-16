@@ -4,7 +4,7 @@ import type { Category } from "../../../entities/category";
 
 interface UseCategoriesReturn {
     categories: Category[];
-    trendingTopics: string[];
+    trendingTopics: Category[];
     loading: boolean;
     error: string | null;
     refetch: () => void;
@@ -12,7 +12,7 @@ interface UseCategoriesReturn {
 
 export const useCategories = (): UseCategoriesReturn => {
     const [categories, setCategories] = useState<Category[]>([]);
-    const [trendingTopics, setTrendingTopics] = useState<string[]>([]);
+    const [trendingTopics, setTrendingTopics] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 

@@ -1,15 +1,36 @@
-import React from 'react';
-import { useCategories } from '../../features/category';
+import React, { useEffect, useState } from 'react';
+import { categoryApi } from '@/features/category/api/categoryApi';
+import type { Category } from '@/entities/category';
 import './Categories.css';
 
 export const Categories: React.FC = () => {
-  const { categories, loading, error } = useCategories();
+  const [trendingTopics, setTrendingTopics] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  if (loading) {
+  useEffect(() => {
+    const fetchTrendingTopics = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        const topics = await categoryApi.getTrendingTopics();
+        setTrendingTopics(topics);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : '트렌딩 카테고리를 불러오는데 실패했습니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTrendingTopics();
+  }, []);
+
+  if (isLoading) {
     return (
       <div className="categories-widget">
         <div className="loading-state">
-          <p>카테고리를 불러오는 중...</p>
+          <p>인기 카테고리를 불러오는 중...</p>
         </div>
       </div>
     );
@@ -27,33 +48,22 @@ export const Categories: React.FC = () => {
 
   return (
     <div className="categories-widget">
-      <div className="categories-header">
-        <h3>취미 카테고리</h3>
-        <button className="view-all-btn">전체보기</button>
-      </div>
-      
       <div className="categories-list">
-        {categories.map((category, index) => (
-          <div key={index} className="category-item">
-            <div className="category-info">
-              <span className="category-name">{category.name}</span>
-              <span className="category-count">{category.open_chat_room_count.toLocaleString()}명</span>
+        {Array.isArray(trendingTopics) && trendingTopics.length > 0 ? (
+          trendingTopics.map((category) => (
+            <div key={category.id} className="category-item">
+              <div className="category-info">
+                <span className="category-name">{category.name}</span>
+                <span className="category-count">{category.open_chat_room_count.toLocaleString()}개 채팅방</span>
+              </div>
+              <button className="join-btn">참여</button>
             </div>
-            <button className="join-btn">참여</button>
+          ))
+        ) : (
+          <div className="no-categories">
+            <p>표시할 인기 카테고리가 없습니다.</p>
           </div>
-        ))}
-      </div>
-      
-      <div className="categories-footer">
-        <button className="explore-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M8 14S9.5 16 12 16S16 14 16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M9 9H9.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M15 9H15.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          새로운 취미 찾기
-        </button>
+        )}
       </div>
     </div>
   );
