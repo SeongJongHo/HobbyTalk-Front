@@ -1,0 +1,31 @@
+.messages-page {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.messages-main {
+    padding-top: 80px; /* Header height */
+}
+
+.messages-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.messages-header {
+    margin-bottom: 2rem;
+}
+
+.messages-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0 0 0.5rem 0;
+}
+
+.messages-header p {
+    color: #718096;
+    font-size: 1.1rem;
+    margin: 0;
+}
