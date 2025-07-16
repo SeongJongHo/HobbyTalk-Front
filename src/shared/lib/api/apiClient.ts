@@ -47,7 +47,7 @@ apiClient.interceptors.response.use(
                 const response = await refreshClient.get(
                     '/api/command/v1/auth/refresh-token'
                 );
-                const newToken = response.data.token;
+                const newToken = response.data?.data?.access_token;
 
                 useAuthStore.getState().setToken(newToken);
 
