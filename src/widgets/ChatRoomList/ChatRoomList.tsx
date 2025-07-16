@@ -10,9 +10,9 @@ export const ChatRoomList: React.FC = () => {
     const [selectedCategory, setSelectedCategory] = useState<string | null>(
         null
     );
-    const [lastCreatedAt, setLastCreatedAt] = useState<string | null>(null);
     const [allRooms, setAllRooms] = useState<any[]>([]);
     const [hasMore, setHasMore] = useState(true);
+    const [lastCreatedAt, setLastCreatedAt] = useState<string | null>(null);
 
     const [inputValue, setInputValue] = useState('');
     const [isSearchMode, setIsSearchMode] = useState(false);
@@ -25,10 +25,47 @@ export const ChatRoomList: React.FC = () => {
 
     const { categories, fetchCategories, clearCategories } = useCategoryStore();
 
+    const resetPagination = useCallback(() => {
+        setAllRooms([]);
+        setLastCreatedAt(null);
+        setHasMore(true);
+    }, []);
+
+    const resetSearch = useCallback(() => {
+        setInputValue('');
+        setIsSearchMode(false);
+        setCurrentSearchTerm('');
+    }, []);
+
     useEffect(() => {
         clearCategories();
         fetchCategories();
     }, [fetchCategories, clearCategories]);
+
+    const addRoomsToList = useCallback(
+        (newRooms: any[], isNewSearch = false) => {
+            setAllRooms(prevRooms => {
+                if (isNewSearch) {
+                    return newRooms;
+                }
+
+                const existingIds = new Set(prevRooms.map(room => room.id));
+                const uniqueNewRooms = newRooms.filter(
+                    room => !existingIds.has(room.id)
+                );
+                return [...prevRooms, ...uniqueNewRooms];
+            });
+
+            if (newRooms.length > 0) {
+                setLastCreatedAt(newRooms[newRooms.length - 1].created_at);
+            }
+
+            if (newRooms.length < roomsPerPage) {
+                setHasMore(false);
+            }
+        },
+        [roomsPerPage]
+    );
 
     const { rooms, loading, error, refetch } = useChatRooms({
         categoryId: selectedCategory || undefined,
@@ -39,28 +76,9 @@ export const ChatRoomList: React.FC = () => {
 
     useEffect(() => {
         if (rooms && rooms.length > 0 && !isSearchMode) {
-            setAllRooms(prevRooms => {
-                const existingIds = new Set(prevRooms.map(room => room.id));
-                const newRooms = rooms.filter(
-                    room => !existingIds.has(room.id)
-                );
-
-                if (lastCreatedAt === null) {
-                    return rooms;
-                } else {
-                    return [...prevRooms, ...newRooms];
-                }
-            });
-
-            if (rooms.length < roomsPerPage) {
-                setHasMore(false);
-            }
-
-            if (rooms.length > 0) {
-                setLastCreatedAt(rooms[rooms.length - 1].created_at);
-            }
+            addRoomsToList(rooms, lastCreatedAt === null);
         }
-    }, [rooms, lastCreatedAt, roomsPerPage, isSearchMode]);
+    }, [rooms, lastCreatedAt, isSearchMode, addRoomsToList]);
 
     const handleJoinRoom = useCallback((room: any) => {
         const isFull =
@@ -99,8 +117,38 @@ export const ChatRoomList: React.FC = () => {
         setIsCreateModalOpen(false);
     }, []);
 
+    const loadMoreData = useCallback(async () => {
+        if (searchLoading) return;
+
+        try {
+            setSearchLoading(true);
+
+            const params = {
+                categoryId: selectedCategory || undefined,
+                search: isSearchMode ? currentSearchTerm : '',
+                lastCreatedAt: lastCreatedAt || undefined,
+                limit: roomsPerPage,
+            };
+
+            const results = await chatRoomApi.getChatRooms(params);
+            addRoomsToList(results);
+        } catch (error) {
+            console.error('데이터 로드 실패:', error);
+        } finally {
+            setSearchLoading(false);
+        }
+    }, [
+        searchLoading,
+        selectedCategory,
+        isSearchMode,
+        currentSearchTerm,
+        lastCreatedAt,
+        roomsPerPage,
+        addRoomsToList,
+    ]);
+
     const handleScroll = useCallback(() => {
-        if (loading || !hasMore || isSearchMode) return;
+        if (loading || searchLoading || !hasMore) return;
 
         const scrollTop =
             window.pageYOffset || document.documentElement.scrollTop;
@@ -108,9 +156,13 @@ export const ChatRoomList: React.FC = () => {
         const documentHeight = document.documentElement.scrollHeight;
 
         if (scrollTop + windowHeight >= documentHeight - 1000) {
-            refetch();
+            if (isSearchMode) {
+                loadMoreData();
+            } else {
+                refetch();
+            }
         }
-    }, [loading, hasMore, refetch, isSearchMode]);
+    }, [loading, searchLoading, hasMore, isSearchMode, loadMoreData, refetch]);
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
@@ -119,22 +171,16 @@ export const ChatRoomList: React.FC = () => {
 
     const handleCategoryChange = (category: string | null) => {
         setSelectedCategory(category);
-        setIsSearchMode(false);
-        setCurrentSearchTerm('');
-        setAllRooms([]);
-        setLastCreatedAt(null);
-        setHasMore(true);
+        resetSearch();
+        resetPagination();
     };
 
     const executeSearch = async () => {
         const searchTerm = inputValue.trim();
 
         if (!searchTerm) {
-            setIsSearchMode(false);
-            setCurrentSearchTerm('');
-            setAllRooms([]);
-            setLastCreatedAt(null);
-            setHasMore(true);
+            resetSearch();
+            resetPagination();
             refetch();
             return;
         }
@@ -147,18 +193,16 @@ export const ChatRoomList: React.FC = () => {
         try {
             setIsSearchMode(true);
             setCurrentSearchTerm(searchTerm);
-            setAllRooms([]);
-            setLastCreatedAt(null);
-            setHasMore(false);
+            resetPagination();
             setSearchLoading(true);
 
             const searchResults = await chatRoomApi.getChatRooms({
                 categoryId: selectedCategory || undefined,
                 search: searchTerm,
-                limit: 100,
+                limit: roomsPerPage,
             });
 
-            setAllRooms(searchResults);
+            addRoomsToList(searchResults, true);
         } catch (error) {
             console.error('검색 실패:', error);
             alert('검색 중 오류가 발생했습니다.');
@@ -174,12 +218,8 @@ export const ChatRoomList: React.FC = () => {
     };
 
     const handleClearSearch = () => {
-        setInputValue('');
-        setIsSearchMode(false);
-        setCurrentSearchTerm('');
-        setAllRooms([]);
-        setLastCreatedAt(null);
-        setHasMore(true);
+        resetSearch();
+        resetPagination();
         refetch();
     };
 
