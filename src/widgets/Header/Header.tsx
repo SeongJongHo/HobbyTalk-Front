@@ -7,6 +7,11 @@ export const Header: React.FC = () => {
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const location = useLocation();
 
+    const handleNotImplemented = (feature: string) => {
+        alert(`${feature}은(는) 아직 제공되지 않는 기능입니다.`);
+        setIsProfileMenuOpen(false);
+    };
+
     return (
         <header className="header">
             <div className="header-content">
@@ -68,7 +73,12 @@ export const Header: React.FC = () => {
 
                         {isProfileMenuOpen && (
                             <div className="profile-dropdown">
-                                <Link to="/profile" className="dropdown-item">
+                                <button
+                                    className="dropdown-item"
+                                    onClick={() =>
+                                        handleNotImplemented('마이페이지')
+                                    }
+                                >
                                     <svg
                                         width="20"
                                         height="20"
@@ -92,9 +102,12 @@ export const Header: React.FC = () => {
                                             strokeLinejoin="round"
                                         />
                                     </svg>
-                                    프로필
-                                </Link>
-                                <Link to="/settings" className="dropdown-item">
+                                    마이페이지
+                                </button>
+                                <button
+                                    className="dropdown-item"
+                                    onClick={() => handleNotImplemented('설정')}
+                                >
                                     <svg
                                         width="20"
                                         height="20"
@@ -119,7 +132,7 @@ export const Header: React.FC = () => {
                                         />
                                     </svg>
                                     설정
-                                </Link>
+                                </button>
                                 <div className="dropdown-divider"></div>
                                 <button className="dropdown-item logout">
                                     <svg
