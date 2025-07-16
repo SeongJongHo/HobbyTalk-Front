@@ -8,10 +8,10 @@ type CategoryState = {
     clearCategories: () => void;
 };
 
-import { create } from "zustand";
-import { categoryApi } from "@/features/category/api/categoryApi";
-import { persist } from "zustand/middleware";
-import type { Category } from "@/entities/category";
+import { create } from 'zustand';
+import { categoryApi } from '@/features/category/api/categoryApi';
+import { persist } from 'zustand/middleware';
+import type { Category } from '@/entities/category';
 
 export const useCategoryStore = create<CategoryState>()(
     persist(
@@ -37,51 +37,15 @@ export const useCategoryStore = create<CategoryState>()(
                 set({ isLoading: true, error: null });
 
                 try {
-                    console.log("Fetching categories from API...");
                     const categories = await categoryApi.getCategories();
-                    console.log("Categories fetched:", categories);
-
-                    // 테스트용: API에서 데이터가 없으면 더미 데이터 추가
-                    const finalCategories =
-                        categories.length > 0
-                            ? categories
-                            : [
-                                  {
-                                      id: 1,
-                                      name: "스포츠",
-                                      open_chat_room_count: 5,
-                                  },
-                                  {
-                                      id: 2,
-                                      name: "게임",
-                                      open_chat_room_count: 8,
-                                  },
-                                  {
-                                      id: 3,
-                                      name: "음악",
-                                      open_chat_room_count: 3,
-                                  },
-                              ];
-
                     set({
-                        categories: finalCategories,
+                        categories: categories,
                         lastUpdated: new Date().toISOString(),
                         isLoading: false,
                         error: null,
                     });
                 } catch (error) {
-                    console.error("Error fetching categories:", error);
-                    // API 호출 실패 시 더미 데이터 사용
-                    set({
-                        categories: [
-                            { id: 1, name: "스포츠", open_chat_room_count: 5 },
-                            { id: 2, name: "게임", open_chat_room_count: 8 },
-                            { id: 3, name: "음악", open_chat_room_count: 3 },
-                        ],
-                        lastUpdated: new Date().toISOString(),
-                        isLoading: false,
-                        error: null,
-                    });
+                    console.error('Error fetching categories:', error);
                 }
             },
 
@@ -102,7 +66,7 @@ export const useCategoryStore = create<CategoryState>()(
                         error:
                             error instanceof Error
                                 ? error.message
-                                : "카테고리를 불러오는데 실패했습니다.",
+                                : '카테고리를 불러오는데 실패했습니다.',
                     });
                 }
             },
@@ -116,16 +80,16 @@ export const useCategoryStore = create<CategoryState>()(
             },
         }),
         {
-            name: "categories-storage",
+            name: 'categories-storage',
             storage: {
-                getItem: (name) => {
+                getItem: name => {
                     const value = localStorage.getItem(name);
                     return value ? JSON.parse(value) : null;
                 },
                 setItem: (name, value) => {
                     localStorage.setItem(name, JSON.stringify(value));
                 },
-                removeItem: (name) => {
+                removeItem: name => {
                     localStorage.removeItem(name);
                 },
             },
