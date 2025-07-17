@@ -9,7 +9,7 @@ export const Header: React.FC = () => {
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
-    const { checkAuth } = useAuthCheck();
+    const { token, checkAuth } = useAuthCheck();
 
     const handleNotImplemented = (feature: string) => {
         alert(`${feature}은(는) 아직 제공되지 않는 기능입니다.`);
@@ -52,32 +52,33 @@ export const Header: React.FC = () => {
                 </div>
 
                 <div className="header-right">
-                    <div className="profile-menu">
-                        <button
-                            className="profile-btn"
-                            onClick={() =>
-                                setIsProfileMenuOpen(!isProfileMenuOpen)
-                            }
-                        >
-                            <div className="profile-avatar">
-                                <User size={24} />
-                            </div>
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                className="dropdown-icon"
+                    {token ? (
+                        <div className="profile-menu">
+                            <button
+                                className="profile-btn"
+                                onClick={() =>
+                                    setIsProfileMenuOpen(!isProfileMenuOpen)
+                                }
                             >
-                                <path
-                                    d="M6 9L12 15L18 9"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                            </svg>
-                        </button>
+                                <div className="profile-avatar">
+                                    <User size={24} />
+                                </div>
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    className="dropdown-icon"
+                                >
+                                    <path
+                                        d="M6 9L12 15L18 9"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                            </button>
 
                         {isProfileMenuOpen && (
                             <div className="profile-dropdown">
@@ -175,7 +176,17 @@ export const Header: React.FC = () => {
                                 </button>
                             </div>
                         )}
-                    </div>
+                        </div>
+                    ) : (
+                        <div className="auth-buttons">
+                            <Link to="/login" className="login-btn">
+                                로그인
+                            </Link>
+                            <Link to="/signup" className="signup-btn">
+                                회원가입
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </div>
         </header>

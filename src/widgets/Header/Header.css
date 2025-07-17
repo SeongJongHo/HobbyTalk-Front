@@ -156,6 +156,47 @@
     margin: 8px 0;
 }
 
+/* 인증 버튼 스타일 */
+.auth-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.login-btn,
+.signup-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.login-btn {
+    color: #667eea;
+    background: transparent;
+    border-color: #667eea;
+}
+
+.login-btn:hover {
+    background: #667eea;
+    color: white;
+}
+
+.signup-btn {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.signup-btn:hover {
+    background: #5a6fd8;
+    border-color: #5a6fd8;
+    transform: translateY(-1px);
+}
+
 /* 반응형 디자인 */
 @media (max-width: 1024px) {
     .header-content {
@@ -170,5 +211,15 @@
 @media (max-width: 768px) {
     .header-content {
         padding: 0 12px;
+    }
+
+    .auth-buttons {
+        gap: 8px;
+    }
+
+    .login-btn,
+    .signup-btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
     }
 }
