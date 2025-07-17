@@ -106,22 +106,23 @@ export const ChatRoomList: React.FC = () => {
         [checkAuth, navigate]
     );
 
-    const handleCreateRoom = useCallback(async (data: CreateRoomData) => {
-        try {
-            await chatRoomApi.createChatRoom(data);
+    const handleCreateRoom = useCallback(
+        async (data: CreateRoomData) => {
+            try {
+                await chatRoomApi.createChatRoom(data);
 
-            alert('채팅방이 성공적으로 생성되었습니다!');
+                alert('채팅방이 성공적으로 생성되었습니다!');
 
-            setAllRooms([]);
-            setLastCreatedAt(null);
-            setHasMore(true);
-        } catch (error: any) {
-            alert(
-                error.message ||
-                    '채팅방 생성에 실패했습니다. 다시 시도해주세요.'
-            );
-        }
-    }, []);
+                navigate('/messages');
+            } catch (error: any) {
+                alert(
+                    error.message ||
+                        '채팅방 생성에 실패했습니다. 다시 시도해주세요.'
+                );
+            }
+        },
+        [navigate]
+    );
 
     const openCreateModal = useCallback(() => {
         if (!checkAuth(navigate)) {

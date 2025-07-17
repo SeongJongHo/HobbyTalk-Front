@@ -33,6 +33,10 @@
     font-weight: 600;
     color: #2d3748;
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
 }
 
 .messages-page .room-category {
