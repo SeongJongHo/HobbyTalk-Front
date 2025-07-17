@@ -7,15 +7,12 @@ interface HomeLogoProps {
     className?: string;
 }
 
-export const HomeLogo: React.FC<HomeLogoProps> = ({ 
-    variant = 'header', 
-    className = '' 
+export const HomeLogo: React.FC<HomeLogoProps> = ({
+    variant = 'header',
+    className = '',
 }) => {
     return (
-        <Link 
-            to="/" 
-            className={`home-logo home-logo--${variant} ${className}`}
-        >
+        <Link to="/" className={`home-logo home-logo--${variant} ${className}`}>
             <span className="home-logo__icon">🗣️</span>
             <span className="home-logo__text">HobbyTalk</span>
         </Link>
