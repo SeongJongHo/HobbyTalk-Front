@@ -7,9 +7,12 @@ import type { MyChatRoom } from '@/entities/chatRoom/model/types';
 export const chatRoomApi = {
     async getChatRooms(params: UseChatRoomsParams): Promise<ChatRoom[]> {
         const cleanParams: any = {
-            category_id: params.category_id || 0,
             limit: params.limit || 20,
         };
+
+        if (params.category_id) {
+            cleanParams.category_id = params.category_id;
+        }
 
         if (params.search) {
             cleanParams.search = params.search;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { chatRoomApi } from '../api/chatRoomApi';
 import type { ChatRoom } from '../../../entities/chatRoom';
 
@@ -23,7 +23,7 @@ export const useChatRooms = (
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchRooms = async () => {
+    const fetchRooms = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
@@ -39,16 +39,16 @@ export const useChatRooms = (
         } finally {
             setLoading(false);
         }
-    };
-
-    useEffect(() => {
-        fetchRooms();
     }, [
         params.category_id,
         params.search,
         params.last_created_at,
         params.limit,
     ]);
+
+    useEffect(() => {
+        fetchRooms();
+    }, [fetchRooms]);
 
     return {
         rooms,
