@@ -80,8 +80,12 @@ export const ChatRoomList: React.FC = () => {
     });
 
     useEffect(() => {
-        if (rooms && rooms.length > 0 && !isSearchMode) {
+        if (rooms && !isSearchMode) {
             addRoomsToList(rooms, lastCreatedAt === null);
+
+            if (lastCreatedAt === null && rooms.length === 0) {
+                setHasMore(false);
+            }
         }
     }, [rooms, lastCreatedAt, isSearchMode, addRoomsToList]);
 
