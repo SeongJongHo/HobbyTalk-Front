@@ -85,17 +85,22 @@ export const ChatRoomList: React.FC = () => {
         }
     }, [rooms, lastCreatedAt, isSearchMode, addRoomsToList]);
 
-    const handleJoinRoom = useCallback((room: any) => {
-        const isFull =
-            (room.current_attendance || 0) >= (room.maximum_capacity || 0);
+    const handleJoinRoom = useCallback(
+        (room: any) => {
+            if (!checkAuth(navigate)) {
+                return;
+            }
 
-        if (isFull) {
-            alert('이 채팅방은 만원입니다.');
-            return;
-        }
+            const isFull =
+                (room.current_attendance || 0) >= (room.maximum_capacity || 0);
 
-        alert('아직 구현되지 않은 기능입니다.');
-    }, []);
+            if (isFull) {
+                alert('이 채팅방은 만원입니다.');
+                return;
+            }
+        },
+        [checkAuth, navigate]
+    );
 
     const handleCreateRoom = useCallback(async (data: CreateRoomData) => {
         try {
