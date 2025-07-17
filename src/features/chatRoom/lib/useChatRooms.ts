@@ -3,9 +3,9 @@ import { chatRoomApi } from '../api/chatRoomApi';
 import type { ChatRoom } from '../../../entities/chatRoom';
 
 export type UseChatRoomsParams = {
-    categoryId?: string;
+    category_id?: number;
     search?: string;
-    lastCreatedAt?: string;
+    last_created_at?: string;
     limit?: number;
 };
 
@@ -43,7 +43,12 @@ export const useChatRooms = (
 
     useEffect(() => {
         fetchRooms();
-    }, [params.categoryId, params.search, params.lastCreatedAt, params.limit]);
+    }, [
+        params.category_id,
+        params.search,
+        params.last_created_at,
+        params.limit,
+    ]);
 
     return {
         rooms,

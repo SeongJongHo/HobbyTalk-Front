@@ -12,7 +12,7 @@ export const ChatRoomList: React.FC = () => {
     const navigate = useNavigate();
     const { checkAuth } = useAuthCheck();
 
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    const [selectedCategory, setSelectedCategory] = useState<number | null>(
         null
     );
     const [allRooms, setAllRooms] = useState<any[]>([]);
@@ -73,9 +73,9 @@ export const ChatRoomList: React.FC = () => {
     );
 
     const { rooms, loading, error, refetch } = useChatRooms({
-        categoryId: selectedCategory || undefined,
+        category_id: selectedCategory || undefined,
         search: '',
-        lastCreatedAt: lastCreatedAt || undefined,
+        last_created_at: lastCreatedAt || undefined,
         limit: roomsPerPage,
     });
 
@@ -137,9 +137,9 @@ export const ChatRoomList: React.FC = () => {
             setSearchLoading(true);
 
             const params = {
-                categoryId: selectedCategory || undefined,
+                category_id: selectedCategory || undefined,
                 search: isSearchMode ? currentSearchTerm : '',
-                lastCreatedAt: lastCreatedAt || undefined,
+                last_created_at: lastCreatedAt || undefined,
                 limit: roomsPerPage,
             };
 
@@ -182,7 +182,7 @@ export const ChatRoomList: React.FC = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [handleScroll]);
 
-    const handleCategoryChange = (category: string | null) => {
+    const handleCategoryChange = (category: number | null) => {
         setSelectedCategory(category);
         resetSearch();
         resetPagination();
@@ -210,7 +210,7 @@ export const ChatRoomList: React.FC = () => {
             setSearchLoading(true);
 
             const searchResults = await chatRoomApi.getChatRooms({
-                categoryId: selectedCategory || undefined,
+                category_id: selectedCategory || undefined,
                 search: searchTerm,
                 limit: roomsPerPage,
             });
@@ -327,11 +327,9 @@ export const ChatRoomList: React.FC = () => {
                         <button
                             key={category.id}
                             className={`category-btn ${
-                                selectedCategory === category.name
-                                    ? 'active'
-                                    : ''
+                                selectedCategory === category.id ? 'active' : ''
                             }`}
-                            onClick={() => handleCategoryChange(category.name)}
+                            onClick={() => handleCategoryChange(category.id)}
                         >
                             {category.name}
                         </button>
@@ -342,7 +340,9 @@ export const ChatRoomList: React.FC = () => {
                 <div className="active-filters">
                     {selectedCategory && (
                         <span className="filter-tag">
-                            카테고리: {selectedCategory}
+                            카테고리:{' '}
+                            {categories.find(cat => cat.id === selectedCategory)
+                                ?.name || '알 수 없음'}
                             <button onClick={() => handleCategoryChange(null)}>
                                 ✕
                             </button>

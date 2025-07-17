@@ -7,8 +7,8 @@ import type { MyChatRoom } from '@/entities/chatRoom/model/types';
 export const chatRoomApi = {
     async getChatRooms(params: UseChatRoomsParams): Promise<ChatRoom[]> {
         const defaultParams = {
-            categoryId: 0,
-            lastCreatedAt: Date.now(),
+            category_id: 0,
+            last_created_at: Date.now(),
             limit: 20,
         };
         const mergedParams = { ...defaultParams, ...params };
