@@ -6,14 +6,21 @@ import type { MyChatRoom } from '@/entities/chatRoom/model/types';
 
 export const chatRoomApi = {
     async getChatRooms(params: UseChatRoomsParams): Promise<ChatRoom[]> {
-        const defaultParams = {
-            category_id: 0,
-            last_created_at: Date.now(),
-            limit: 20,
+        const cleanParams: any = {
+            category_id: params.category_id || 0,
+            limit: params.limit || 20,
         };
-        const mergedParams = { ...defaultParams, ...params };
+
+        if (params.search) {
+            cleanParams.search = params.search;
+        }
+
+        if (params.last_created_at) {
+            cleanParams.last_created_at = params.last_created_at;
+        }
+
         const response = await apiClient.get('/api/query/v1/open-chat-rooms', {
-            params: mergedParams,
+            params: cleanParams,
         });
         return response.data?.data || [];
     },
@@ -36,9 +43,23 @@ export const chatRoomApi = {
         }
     },
 
-    async getMyRooms(): Promise<MyChatRoom[]> {
+    async getMyRooms(params?: {
+        last_created_at?: string;
+        limit?: number;
+    }): Promise<MyChatRoom[]> {
+        const cleanParams: any = {};
+
+        if (params?.limit) {
+            cleanParams.limit = params.limit;
+        }
+
+        if (params?.last_created_at) {
+            cleanParams.last_created_at = params.last_created_at;
+        }
+
         const response = await apiClient.get(
-            '/api/query/v1/open-chat-rooms/my'
+            '/api/query/v1/open-chat-rooms/my',
+            Object.keys(cleanParams).length > 0 ? { params: cleanParams } : {}
         );
         return response.data?.data || [];
     },
