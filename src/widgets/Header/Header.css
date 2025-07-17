@@ -23,24 +23,6 @@
     gap: 40px;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-    color: #333;
-    font-weight: 700;
-    font-size: 1.5rem;
-}
-
-.logo-icon {
-    font-size: 2rem;
-}
-
-.logo-text {
-    color: #667eea;
-}
-
 .main-nav {
     display: flex;
     gap: 32px;
@@ -188,9 +170,5 @@
 @media (max-width: 768px) {
     .header-content {
         padding: 0 12px;
-    }
-
-    .logo-text {
-        display: none;
     }
 }

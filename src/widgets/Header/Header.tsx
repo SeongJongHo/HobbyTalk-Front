@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { User } from 'lucide-react';
 import { useAuthCheck } from '@/shared/lib/auth/authUtils';
+import { HomeLogo } from '@/shared/ui';
 import './Header.css';
 
 export const Header: React.FC = () => {
@@ -25,10 +26,7 @@ export const Header: React.FC = () => {
         <header className="header">
             <div className="header-content">
                 <div className="header-left">
-                    <Link to="/" className="logo">
-                        <span className="logo-icon">🗣️</span>
-                        <span className="logo-text">HobbyTalk</span>
-                    </Link>
+                    <HomeLogo variant="header" />
 
                     <nav className="main-nav">
                         <Link

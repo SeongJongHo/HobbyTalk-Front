@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { SignupForm } from '@/features/auth';
+import { HomeLogo } from '@/shared/ui';
 import './SignupPage.css';
 import { useAppNavigation } from '@/shared/lib/navigation/useAppNavigation';
 import { useAuthStore } from '@/entities/user/store/useAuthStore';
@@ -26,6 +27,7 @@ export const SignupPage: React.FC = () => {
 
     return (
         <div className="signup-page">
+            <HomeLogo variant="auth" />
             <div className="signup-card">
                 <div className="signup-header">
                     <h1>계정 만들기</h1>

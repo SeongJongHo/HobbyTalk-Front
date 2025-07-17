@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LoginForm } from '@/features/auth';
+import { HomeLogo } from '@/shared/ui';
 import './LoginPage.css';
 import { useAppNavigation } from '@/shared/lib/navigation/useAppNavigation';
 import { useAuthStore } from '@/entities/user/store/useAuthStore';
@@ -25,9 +26,10 @@ export const LoginPage: React.FC = () => {
 
     return (
         <div className="login-page">
+            <HomeLogo variant="auth" />
             <div className="login-card">
                 <div className="login-header">
-                    <h1>HobbyTalk</h1>
+                    <h1>로그인</h1>
                     <p>오픈채팅으로 취미를 공유하세요</p>
                 </div>
                 <div className="auth-section">

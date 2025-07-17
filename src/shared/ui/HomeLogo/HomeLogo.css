@@ -1,0 +1,87 @@
+/* 기본 로고 스타일 */
+.home-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.home-logo__icon {
+    font-size: 1.8rem;
+}
+
+.home-logo__text {
+    font-size: 1.5rem;
+}
+
+/* 헤더 버전 (기존 Header 컴포넌트용) */
+.home-logo--header {
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.home-logo--header:hover {
+    transform: scale(1.05);
+    opacity: 0.8;
+}
+
+.home-logo--header .home-logo__icon {
+    font-size: 2rem;
+}
+
+.home-logo--header .home-logo__text {
+    font-size: 1.5rem;
+    color: #667eea;
+}
+
+/* 인증 페이지 버전 (로그인/회원가입용) */
+.home-logo--auth {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    color: white;
+    font-size: 1.5rem;
+    z-index: 10;
+}
+
+.home-logo--auth:hover {
+    transform: translateY(-2px);
+    text-shadow: 
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
+}
+
+.home-logo--auth .home-logo__icon {
+    font-size: 1.8rem;
+}
+
+.home-logo--auth .home-logo__text {
+    font-size: 1.5rem;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .home-logo--auth {
+        top: 16px;
+        left: 16px;
+        font-size: 1.2rem;
+    }
+
+    .home-logo--auth .home-logo__icon {
+        font-size: 1.4rem;
+    }
+
+    .home-logo--auth .home-logo__text {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-logo--header .home-logo__text {
+        display: none;
+    }
+}
