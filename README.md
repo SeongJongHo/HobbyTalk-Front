@@ -1,69 +1,207 @@
-# React + TypeScript + Vite
+# 🗣️ HobbyTalk Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+HobbyTalk은 취미를 기반으로 한 실시간 채팅 플랫폼입니다. 사용자들이 관심사에 따라 채팅방을 생성하고 참여할 수 있는 React 기반 웹 애플리케이션입니다.
 
-Currently, two official plugins are available:
+## ✨ 주요 기능
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 🏠 홈 페이지
 
-## Expanding the ESLint configuration
+-   **인기 취미 트렌드**: 실시간으로 인기 있는 취미 카테고리 표시
+-   **채팅방 목록**: 전체 채팅방을 카드 형태로 표시
+-   **검색 기능**: 채팅방 제목/설명 기반 실시간 검색
+-   **무한 스크롤**: 자동 페이지네이션으로 더 많은 채팅방 로드
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 💬 채팅방 관리
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+-   **채팅방 생성**: 카테고리, 최대 인원, 공지사항 설정
+-   **공개/비공개 채팅방**: 비밀번호 기반 비공개 채팅방 지원
+-   **실시간 상태**: 활성/비활성 상태 및 참여 인원 표시
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### 🔐 사용자 인증
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+-   **로그인/회원가입**: JWT 기반 인증 시스템
+-   **토큰 관리**: 자동 토큰 갱신 및 상태 관리
+-   **보호된 기능**: 인증된 사용자만 접근 가능한 기능들
+
+### 📱 반응형 디자인
+
+-   **모바일 친화적**: 다양한 화면 크기에 최적화된 반응형 UI
+-   **다크/라이트 테마**: 사용자 선호도에 따른 테마 지원
+
+## 🛠️ 기술 스택
+
+### Core
+
+-   **React 19.1.0** - 최신 React 기능 활용
+-   **TypeScript** - 타입 안전성을 위한 정적 타입 검사
+-   **Vite** - 빠른 개발 서버 및 빌드 도구
+
+### 상태 관리
+
+-   **Zustand** - 경량화된 상태 관리 라이브러리
+-   **Persist Middleware** - 브라우저 저장소 동기화
+
+### 라우팅 & API
+
+-   **React Router DOM** - 클라이언트 사이드 라우팅
+-   **Axios** - HTTP 클라이언트 및 인터셉터
+
+### UI/UX
+
+-   **Lucide React** - 모던한 아이콘 라이브러리
+-   **CSS Modules** - 스코프드 스타일링
+-   **Styled Components** - CSS-in-JS 스타일링
+
+### 개발 도구
+
+-   **ESLint** - 코드 품질 및 스타일 가이드
+-   **TypeScript ESLint** - TypeScript 전용 린팅 규칙
+-   **Prettier** - 코드 포매팅
+
+## 📁 프로젝트 구조
+
+```
+src/
+├── app/                    # 앱 설정 및 글로벌 스타일
+│   ├── App.tsx
+│   └── styles/
+├── pages/                  # 페이지 컴포넌트
+│   ├── home/              # 홈 페이지
+│   ├── login/             # 로그인 페이지
+│   ├── signup/            # 회원가입 페이지
+│   └── messages/          # 메시지 페이지
+├── widgets/               # 복합 UI 위젯
+│   ├── Header/            # 네비게이션 헤더
+│   ├── ChatRoomList/      # 채팅방 목록
+│   ├── CreateRoomModal/   # 채팅방 생성 모달
+│   ├── Categories/        # 카테고리 위젯
+│   └── MyRoomsList/       # 내 채팅방 목록
+├── features/              # 비즈니스 로직 및 API
+│   ├── auth/              # 인증 관련 기능
+│   ├── chatRoom/          # 채팅방 관련 기능
+│   └── category/          # 카테고리 관련 기능
+├── entities/              # 도메인 엔티티 및 타입
+│   ├── user/              # 사용자 엔티티
+│   ├── chatRoom/          # 채팅방 엔티티
+│   └── category/          # 카테고리 엔티티
+└── shared/                # 공통 유틸리티 및 컴포넌트
+    ├── ui/                # 재사용 가능한 UI 컴포넌트
+    ├── lib/               # 유틸리티 함수
+    └── api/               # API 클라이언트 설정
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🚀 시작하기
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 사전 요구사항
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+-   Node.js 18.0.0 이상
+-   npm 또는 yarn
+
+### 설치 및 실행
+
+1. **의존성 설치**
+
+```bash
+npm install
 ```
+
+2. **환경 변수 설정**
+
+```bash
+# .env.dev 파일 참조
+VITE_API_BASE_URL=http://localhost:8000
+VITE_USE_MOCK_DATA=false
+VITE_APP_ENV=dev
+```
+
+3. **개발 서버 실행**
+
+```bash
+npm run dev
+```
+
+4. **빌드**
+
+```bash
+npm run build
+```
+
+5. **린팅**
+
+```bash
+npm run lint
+```
+
+## 🔧 주요 컴포넌트
+
+### ChatRoomList
+
+채팅방 목록을 관리하는 메인 컴포넌트로, 다음 기능들을 제공합니다:
+
+-   카테고리별 필터링
+-   실시간 검색
+-   무한 스크롤 페이지네이션
+-   채팅방 생성 모달 연동
+
+### Header
+
+애플리케이션의 네비게이션을 담당하며:
+
+-   로고 및 메인 네비게이션
+-   사용자 프로필 드롭다운
+-   인증 상태 기반 조건부 렌더링
+
+### CreateRoomModal
+
+새로운 채팅방 생성을 위한 모달 컴포넌트:
+
+-   카테고리 선택
+-   공개/비공개 설정
+-   유효성 검사
+
+## 🔐 인증 시스템
+
+JWT 기반의 인증 시스템을 구현하며:
+
+-   **액세스 토큰**: API 요청 인증
+-   **리프레시 토큰**: 자동 토큰 갱신
+-   **로컬 스토리지**: 인증 상태 영속화
+-   **인터셉터**: 자동 토큰 첨부 및 갱신
+
+## 🎨 스타일링
+
+### CSS 아키텍처
+
+-   **CSS Modules**: 컴포넌트별 스코프드 스타일
+-   **글로벌 스타일**: 앱 전체 공통 스타일
+-   **테마 시스템**: 일관된 색상 및 타이포그래피
+
+### 주요 색상
+
+-   Primary: `#667eea` (브랜드 블루)
+-   Success: `#10b981` (성공 상태)
+-   Error: `#ef4444` (에러 상태)
+-   Gray Scale: `#f5f7fa` ~ `#333` (배경 및 텍스트)
+
+## 🔄 상태 관리
+
+### Zustand Store
+
+-   **AuthStore**: 사용자 인증 상태
+-   **CategoryStore**: 카테고리 및 트렌딩 데이터
+-   **ChatRoomStore**: 채팅방 관련 상태
+
+### Persist 설정
+
+중요한 상태들은 브라우저 저장소에 영속화됩니다:
+
+-   사용자 토큰
+-   사용자 설정
+-   캐시된 데이터
+
+## 🚀 배포
+
+### 환경별 설정
+
+-   **개발환경**: `.env.dev`
+-   **프로덕션**: `.env.prod`
