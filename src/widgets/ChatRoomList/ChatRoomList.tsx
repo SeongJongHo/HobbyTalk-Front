@@ -97,11 +97,13 @@ export const ChatRoomList: React.FC = () => {
 
             const isFull =
                 (room.current_attendance || 0) >= (room.maximum_capacity || 0);
-
             if (isFull) {
                 alert('이 채팅방은 만원입니다.');
                 return;
             }
+
+            alert('아직 제공되지 않는 기능입니다.');
+            return;
         },
         [checkAuth, navigate]
     );
