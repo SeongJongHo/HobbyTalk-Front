@@ -108,7 +108,25 @@
 }
 
 @media (max-width: 768px) {
-    .home-content {
-        padding: 12px;
+    .home-content,
+    .home-page,
+    .main-content,
+    .trending-topics,
+    .topic-list,
+    .topic-item {
+        width: 100% !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    .trending-topics {
+        padding: 8px !important;
+    }
+    .topic-item {
+        padding: 8px !important;
+        font-size: 0.95rem !important;
     }
 }
